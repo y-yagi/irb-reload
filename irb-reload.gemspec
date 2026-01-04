@@ -28,4 +28,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "irb", "~> 1.13"
   spec.add_dependency "listen", "~> 3.8"
+  spec.add_dependency "logger" # FIXME: This is for `listen` gem dependency. Remove it when `listen` releases a new version.
 end

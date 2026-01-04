@@ -4,6 +4,7 @@ PATH
     irb-reload (0.1.0)
       irb (~> 1.13)
       listen (~> 3.8)
+      logger
 
 GEM
   remote: https://rubygems.org/
@@ -46,7 +47,6 @@ PLATFORMS
 
 DEPENDENCIES
   irb-reload!
-  logger
   minitest
   minitest-mock
   rake

@@ -8,4 +8,3 @@ gemspec
 gem "rake"
 gem "minitest"
 gem "minitest-mock"
-gem "logger" # FIXME: This is for `listen` gem dependency. Remove it when `listen` releases a new version.
