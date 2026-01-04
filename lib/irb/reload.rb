@@ -15,7 +15,7 @@ module IRB
       def start
         @changed_files = Set.new
         normalized_paths = normalize_paths(config[:paths] || DEFAULT_PATHS)
-        listener_options = default_listen_option
+        listener_options = { only: DEFAULT_PATTERN }
 
         @listener = Listen.to(*normalized_paths, **listener_options) do |modified, added, _removed|
           record_changed_files(modified, added)
@@ -43,13 +43,6 @@ module IRB
       end
 
       private
-
-      def default_listen_option
-        options = { only: DEFAULT_PATTERN }
-        config_options = config.fetch(:listen, {})
-        options.merge!(symbolize_keys(config_options))
-        options
-      end
 
       def normalize_paths(paths)
         normalized = Array(paths).map(&:to_s).reject(&:empty?)
@@ -82,12 +75,6 @@ module IRB
         warn "[irb-reload] Failed to reload #{file}: #{e.class}: #{e.message}"
       ensure
         $VERBOSE = old_verbose
-      end
-
-      def symbolize_keys(hash)
-        hash.each_with_object({}) do |(key, value), memo|
-          memo[key.to_sym] = value
-        end
       end
     end
   end

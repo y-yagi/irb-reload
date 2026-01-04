@@ -7,15 +7,12 @@ module IRB
   class ReloadTest < Minitest::Test
     def test_start_respects_configured_paths_and_listen_options
       IRB::Reload.config[:paths] = %w[app services]
-      IRB::Reload.config[:listen] = { "ignore" => %r{/tmp}, latency: 0.25 }
 
       listener = with_listener_stub do
         IRB::Reload.start
       end
 
       assert_equal %w[app services], listener.paths
-      assert_equal %r{/tmp}, listener.options[:ignore]
-      assert_equal 0.25, listener.options[:latency]
     end
 
     def test_record_updated_and_added_ruby_files_only_once

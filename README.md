@@ -32,11 +32,8 @@ You can tweak the watcher through `IRB.conf`.
 ```ruby
 IRB.conf[:RELOAD] = {
 	paths: %w[app lib],               # directories to watch. Default is `lib`.
-	listen: { latency: 0.2 },         # options forwarded to Listen
 }
 ```
-
-Any keys under `:listen` are passed straight to `Listen.to`. Use this to change latency, polling, or ignore patterns.
 
 ## Development
 
