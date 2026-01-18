@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require "irb"
-require "listen"
+require "set"
+require "watchcat"
 
 require_relative "reload/version"
 require_relative "reload/command"
@@ -10,18 +11,22 @@ module IRB
   module Reload
     DEFAULT_PATTERN = /\.rb\z/.freeze
     DEFAULT_PATHS = ["lib"]
+    WATCHCAT_FILTERS = {
+      ignore_remove: true,
+      ignore_access: true
+    }.freeze
 
     class << self
       def start
         @changed_files = Set.new
         normalized_paths = normalize_paths(config[:paths] || DEFAULT_PATHS)
-        listener_options = { only: DEFAULT_PATTERN }
 
-        @listener = Listen.to(*normalized_paths, **listener_options) do |modified, added, _removed|
-          record_changed_files(modified, added)
+        @watcher&.stop if defined?(@watcher) && @watcher
+        @watcher = Watchcat.watch(normalized_paths, filters: WATCHCAT_FILTERS) do |event|
+          record_watchcat_event(event)
         end
 
-        @listener.start
+        @watched_paths = normalized_paths
         true
       end
 
@@ -33,9 +38,7 @@ module IRB
       end
 
       def watched_paths
-        return [] unless @listener
-
-        @listener.respond_to?(:directories) ? @listener.directories : []
+        @watched_paths || []
       end
 
       def config
@@ -57,6 +60,24 @@ module IRB
 
           record_file(file)
         end
+      end
+
+      def record_watchcat_event(event)
+        return unless actionable_event?(event)
+
+        paths = Array(event.paths)
+        if event.kind.create?
+          record_changed_files([], paths)
+        else
+          record_changed_files(paths, [])
+        end
+      end
+
+      def actionable_event?(event)
+        kind = event&.kind
+        return false unless kind
+
+        kind.create? || kind.modify? || kind.any?
       end
 
       def ruby_file?(file)

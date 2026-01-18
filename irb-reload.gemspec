@@ -27,6 +27,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "irb", "~> 1.13"
-  spec.add_dependency "listen", "~> 3.8"
-  spec.add_dependency "logger" # FIXME: This is for `listen` gem dependency. Remove it when `listen` releases a new version.
+  spec.add_dependency "watchcat", "~> 0.5"
 end
