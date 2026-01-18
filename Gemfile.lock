@@ -3,24 +3,17 @@ PATH
   specs:
     irb-reload (0.1.1)
       irb (~> 1.13)
-      listen (~> 3.8)
-      logger
+      watchcat (~> 0.5)
 
 GEM
   remote: https://rubygems.org/
   specs:
     date (3.5.1)
     erb (6.0.1)
-    ffi (1.17.3)
-    ffi (1.17.3-x86_64-linux-gnu)
     io-console (0.8.2)
     irb (1.13.2)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    listen (3.9.0)
-      rb-fsevent (~> 0.10, >= 0.10.3)
-      rb-inotify (~> 0.9, >= 0.9.10)
-    logger (1.7.0)
     minitest (6.0.1)
       prism (~> 1.5)
     minitest-mock (5.27.0)
@@ -29,9 +22,6 @@ GEM
       date
       stringio
     rake (13.3.1)
-    rb-fsevent (0.11.2)
-    rb-inotify (0.11.1)
-      ffi (~> 1.0)
     rdoc (7.0.3)
       erb
       psych (>= 4.0.0)
@@ -40,9 +30,10 @@ GEM
       io-console (~> 0.5)
     stringio (3.2.0)
     tsort (0.2.0)
+    watchcat (0.5.1-x86_64-linux)
+      psych
 
 PLATFORMS
-  ruby
   x86_64-linux
 
 DEPENDENCIES
@@ -54,24 +45,19 @@ DEPENDENCIES
 CHECKSUMS
   date (3.5.1) sha256=750d06384d7b9c15d562c76291407d89e368dda4d4fff957eb94962d325a0dc0
   erb (6.0.1) sha256=28ecdd99c5472aebd5674d6061e3c6b0a45c049578b071e5a52c2a7f13c197e5
-  ffi (1.17.3) sha256=0e9f39f7bb3934f77ad6feab49662be77e87eedcdeb2a3f5c0234c2938563d4c
-  ffi (1.17.3-x86_64-linux-gnu) sha256=3746b01f677aae7b16dc1acb7cb3cc17b3e35bdae7676a3f568153fb0e2c887f
   io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc
   irb (1.13.2) sha256=e72928d8047a515cd868967ecafbe5388097402449fb8ef658c33db6ccde8117
   irb-reload (0.1.1)
-  listen (3.9.0) sha256=db9e4424e0e5834480385197c139cb6b0ae0ef28cc13310cfd1ca78377d59c67
-  logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
   minitest (6.0.1) sha256=7854c74f48e2e975969062833adc4013f249a4b212f5e7b9d5c040bf838d54bb
   minitest-mock (5.27.0) sha256=7040ed7185417a966920987eaa6eaf1be4ea1fc5b25bb03ff4703f98564a55b0
   prism (1.7.0) sha256=10062f734bf7985c8424c44fac382ac04a58124ea3d220ec3ba9fe4f2da65103
   psych (5.3.1) sha256=eb7a57cef10c9d70173ff74e739d843ac3b2c019a003de48447b2963d81b1974
   rake (13.3.1) sha256=8c9e89d09f66a26a01264e7e3480ec0607f0c497a861ef16063604b1b08eb19c
-  rb-fsevent (0.11.2) sha256=43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe
-  rb-inotify (0.11.1) sha256=a0a700441239b0ff18eb65e3866236cd78613d6b9f78fea1f9ac47a85e47be6e
   rdoc (7.0.3) sha256=dfe3d0981d19b7bba71d9dbaeb57c9f4e3a7a4103162148a559c4fc687ea81f9
   reline (0.6.3) sha256=1198b04973565b36ec0f11542ab3f5cfeeec34823f4e54cebde90968092b1835
   stringio (3.2.0) sha256=c37cb2e58b4ffbd33fe5cd948c05934af997b36e0b6ca6fdf43afa234cf222e1
   tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
+  watchcat (0.5.1-x86_64-linux) sha256=ccd774562a718c34d749df922a0b3bd81e0bb0059b9e112068ec96a3945cccd5
 
 BUNDLED WITH
   4.0.3
