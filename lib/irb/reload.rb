@@ -9,7 +9,6 @@ require_relative "reload/command"
 
 module IRB
   module Reload
-    DEFAULT_PATTERN = /\.rb\z/.freeze
     DEFAULT_PATHS = ["lib"]
     WATCHCAT_FILTERS = {
       ignore_remove: true,
