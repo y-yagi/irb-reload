@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Yuji Yaginuma"]
   spec.email = ["yuuji.yaginuma@gmail.com"]
 
-  spec.summary = "Auto-reload changed Ruby files inside an IRB session."
+  spec.summary = "Reload changed Ruby files inside an IRB session."
   spec.homepage = "https://github.com/y-yagi/irb-reload"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.2.0"
