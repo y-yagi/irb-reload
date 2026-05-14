@@ -16,6 +16,18 @@ module IRB
       assert_equal({ ignore_remove: true, ignore_access: true }, watcher.options[:filters])
     end
 
+    def test_reload_ignores_load_error_and_removes_file_from_changed_files
+      IRB::Reload.instance_variable_set(:@changed_files, Set["lib/deleted.rb"])
+
+      Kernel.stub(:load, ->(_) { raise LoadError, "cannot load such file" }) do
+        out, err = capture_io { IRB::Reload.reload! }
+        assert_empty out
+        assert_empty err
+      end
+
+      assert_empty IRB::Reload.instance_variable_get(:@changed_files)
+    end
+
     def test_record_updated_and_added_ruby_files_only_once
       watcher = with_watchcat_stub do
         IRB::Reload.start

@@ -91,6 +91,8 @@ module IRB
         old_verbose, $VERBOSE = $VERBOSE, nil
         Kernel.load(file)
         $stdout.puts "[irb-reload] Reloaded #{file}"
+      rescue LoadError
+        @changed_files.delete(file)
       rescue StandardError => e
         warn "[irb-reload] Failed to reload #{file}: #{e.class}: #{e.message}"
       ensure
