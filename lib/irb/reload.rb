@@ -17,6 +17,7 @@ module IRB
 
     class << self
       def start
+        @mutex = Mutex.new
         @changed_files = Set.new
         normalized_paths = normalize_paths(config[:paths] || DEFAULT_PATHS)
 
@@ -30,10 +31,9 @@ module IRB
       end
 
       def reload!
-        @changed_files.each do |file|
+        consume_changed_files.each do |file|
           reload_file(file)
         end
-        @changed_files.clear
       end
 
       def watched_paths
@@ -77,7 +77,15 @@ module IRB
       end
 
       def record_file(file)
-        @changed_files.add(file)
+        @mutex.synchronize { @changed_files.add(file) }
+      end
+
+      def consume_changed_files
+        @mutex.synchronize do
+          pending = @changed_files.to_a
+          @changed_files.clear
+          pending
+        end
       end
 
       def reload_file(file)
@@ -85,7 +93,7 @@ module IRB
         Kernel.load(file)
         $stdout.puts "[irb-reload] Reloaded #{file}"
       rescue LoadError
-        @changed_files.delete(file)
+        # The file was removed or moved. Nothing to reload.
       rescue StandardError => e
         warn "[irb-reload] Failed to reload #{file}: #{e.class}: #{e.message}"
       ensure

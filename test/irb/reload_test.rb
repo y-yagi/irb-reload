@@ -28,6 +28,17 @@ module IRB
       assert_empty IRB::Reload.instance_variable_get(:@changed_files)
     end
 
+    def test_reload_keeps_files_recorded_while_loading
+      with_watchcat_stub { IRB::Reload.start }
+      IRB::Reload.instance_variable_set(:@changed_files, Set["lib/foo.rb"])
+
+      Kernel.stub(:load, ->(_) { IRB::Reload.send(:record_file, "lib/late.rb") }) do
+        capture_io { IRB::Reload.reload! }
+      end
+
+      assert_equal Set["lib/late.rb"], IRB::Reload.instance_variable_get(:@changed_files)
+    end
+
     def test_record_updated_and_added_ruby_files_only_once
       watcher = with_watchcat_stub do
         IRB::Reload.start
