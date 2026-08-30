@@ -33,7 +33,7 @@ module IRB
         IRB::Reload.start
       end
 
-      watcher.simulate_event(paths: ["lib/foo.rb", "lib/foo.rb", "README.md", "lib/bar.rb"], event_type: :modify)
+      watcher.simulate_event(paths: ["lib/foo.rb", "lib/foo.rb", "lib/bar.rb"], event_type: :modify)
       watcher.simulate_event(paths: ["lib/baz.rb"], event_type: :create)
 
       assert_equal Set["lib/foo.rb", "lib/bar.rb", "lib/baz.rb"], IRB::Reload.instance_variable_get(:@changed_files)

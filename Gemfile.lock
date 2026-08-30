@@ -3,7 +3,7 @@ PATH
   specs:
     irb-reload (0.1.4)
       irb (~> 1.13)
-      watchcat (~> 0.5)
+      watchcat (~> 0.6)
 
 GEM
   remote: https://rubygems.org/
@@ -34,7 +34,7 @@ GEM
       io-console (~> 0.5)
     stringio (3.2.0)
     tsort (0.2.0)
-    watchcat (0.5.2-x86_64-linux)
+    watchcat (0.6.1-x86_64-linux)
       psych
 
 PLATFORMS
@@ -63,7 +63,7 @@ CHECKSUMS
   reline (0.6.3) sha256=1198b04973565b36ec0f11542ab3f5cfeeec34823f4e54cebde90968092b1835
   stringio (3.2.0) sha256=c37cb2e58b4ffbd33fe5cd948c05934af997b36e0b6ca6fdf43afa234cf222e1
   tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
-  watchcat (0.5.2-x86_64-linux) sha256=9cc71b6ffeba73b8865fbf0b1b3d7362d805272d41028f37074e92657b94e66f
+  watchcat (0.6.1-x86_64-linux) sha256=a79239e6189fcd575e8b9f0940bf3e87d5a9477c165d96498a748abc78df2c67
 
 BUNDLED WITH
   4.0.3

@@ -10,9 +10,9 @@ require_relative "reload/command"
 module IRB
   module Reload
     DEFAULT_PATHS = ["lib"]
-    WATCHCAT_FILTERS = {
-      ignore_remove: true,
-      ignore_access: true
+    WATCHCAT_OPTIONS = {
+      filters: { ignore_remove: true,ignore_access: true },
+      patterns: [ "*.rb" ],
     }.freeze
 
     class << self
@@ -21,7 +21,7 @@ module IRB
         normalized_paths = normalize_paths(config[:paths] || DEFAULT_PATHS)
 
         @watcher&.stop if defined?(@watcher) && @watcher
-        @watcher = Watchcat.watch(normalized_paths, filters: WATCHCAT_FILTERS) do |event|
+        @watcher = Watchcat.watch(normalized_paths, **WATCHCAT_OPTIONS) do |event|
           record_watchcat_event(event)
         end
 
@@ -54,10 +54,7 @@ module IRB
 
       def record_changed_files(modified, added)
         (Array(modified) + Array(added)).uniq.each do |file|
-          next if file.nil?
-          next unless ruby_file?(file)
-
-          record_file(file)
+          record_file(file) unless file.nil?
         end
       end
 
@@ -77,10 +74,6 @@ module IRB
         return false unless kind
 
         kind.create? || kind.modify? || kind.any?
-      end
-
-      def ruby_file?(file)
-        File.extname(file) == ".rb"
       end
 
       def record_file(file)
