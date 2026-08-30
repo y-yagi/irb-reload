@@ -5,6 +5,11 @@ require "set"
 
 module IRB
   class ReloadTest < Minitest::Test
+    def teardown
+      IRB.conf[:RELOAD] = {}
+      IRB::Reload.instance_variable_set(:@changed_files, Set.new)
+    end
+
     def test_start_respects_configured_paths_and_watchcat_filters
       IRB::Reload.config[:paths] = %w[app services]
 
@@ -48,6 +53,15 @@ module IRB
       watcher.simulate_event(paths: ["lib/baz.rb"], event_type: :create)
 
       assert_equal Set["lib/foo.rb", "lib/bar.rb", "lib/baz.rb"], IRB::Reload.instance_variable_get(:@changed_files)
+    end
+
+    def test_reload_reports_a_failure_on_stderr
+      IRB::Reload.instance_variable_set(:@changed_files, Set["lib/foo.rb"])
+
+      Kernel.stub(:load, ->(_) { raise ArgumentError, "boom" }) do
+        _out, err = capture_io { IRB::Reload.reload! }
+        assert_includes err, "[irb-reload] Failed to reload lib/foo.rb: ArgumentError: boom"
+      end
     end
 
     private

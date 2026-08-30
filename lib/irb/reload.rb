@@ -89,13 +89,17 @@ module IRB
       end
 
       def reload_file(file)
-        old_verbose, $VERBOSE = $VERBOSE, nil
-        Kernel.load(file)
+        load_quietly(file)
         $stdout.puts "[irb-reload] Reloaded #{file}"
       rescue LoadError
         # The file was removed or moved. Nothing to reload.
       rescue StandardError => e
         warn "[irb-reload] Failed to reload #{file}: #{e.class}: #{e.message}"
+      end
+
+      def load_quietly(file)
+        old_verbose, $VERBOSE = $VERBOSE, nil
+        Kernel.load(file)
       ensure
         $VERBOSE = old_verbose
       end
