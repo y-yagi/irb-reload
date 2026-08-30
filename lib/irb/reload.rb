@@ -93,7 +93,7 @@ module IRB
         $stdout.puts "[irb-reload] Reloaded #{file}"
       rescue LoadError
         # The file was removed or moved. Nothing to reload.
-      rescue StandardError => e
+      rescue ScriptError, StandardError => e
         warn "[irb-reload] Failed to reload #{file}: #{e.class}: #{e.message}"
       end
 

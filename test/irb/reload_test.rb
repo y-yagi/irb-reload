@@ -64,6 +64,15 @@ module IRB
       end
     end
 
+    def test_reload_does_not_raise_on_a_syntax_error
+      IRB::Reload.instance_variable_set(:@changed_files, Set["lib/foo.rb"])
+
+      Kernel.stub(:load, ->(_) { raise SyntaxError, "unexpected end-of-input" }) do
+        _out, err = capture_io { IRB::Reload.reload! }
+        assert_includes err, "[irb-reload] Failed to reload lib/foo.rb: SyntaxError"
+      end
+    end
+
     private
 
     def with_watchcat_stub
