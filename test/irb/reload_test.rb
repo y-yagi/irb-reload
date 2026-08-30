@@ -55,6 +55,63 @@ module IRB
       assert_equal Set["lib/foo.rb", "lib/bar.rb", "lib/baz.rb"], IRB::Reload.instance_variable_get(:@changed_files)
     end
 
+    def test_auto_reload_does_nothing_when_auto_is_disabled
+      IRB::Reload.instance_variable_set(:@changed_files, Set["lib/foo.rb"])
+
+      Kernel.stub(:load, ->(_) { flunk "must not reload" }) do
+        out, err = capture_io { IRB::Reload.auto_reload! }
+        assert_empty out
+        assert_empty err
+      end
+
+      assert_equal Set["lib/foo.rb"], IRB::Reload.instance_variable_get(:@changed_files)
+    end
+
+    def test_auto_reload_reloads_without_logging_when_auto_is_enabled
+      IRB::Reload.config[:auto] = true
+      IRB::Reload.instance_variable_set(:@changed_files, Set["lib/foo.rb"])
+      loaded = []
+
+      Kernel.stub(:load, ->(file) { loaded << file }) do
+        out, err = capture_io { IRB::Reload.auto_reload! }
+        assert_empty out
+        assert_empty err
+      end
+
+      assert_equal ["lib/foo.rb"], loaded
+      assert_empty IRB::Reload.instance_variable_get(:@changed_files)
+    end
+
+    def test_manual_reload_logs_reloaded_files
+      IRB::Reload.instance_variable_set(:@changed_files, Set["lib/foo.rb"])
+
+      Kernel.stub(:load, ->(_) {}) do
+        out, _err = capture_io { IRB::Reload.reload! }
+        assert_includes out, "[irb-reload] Reloaded lib/foo.rb"
+      end
+    end
+
+    def test_auto_reload_still_reports_failures
+      IRB::Reload.config[:auto] = true
+      IRB::Reload.instance_variable_set(:@changed_files, Set["lib/foo.rb"])
+
+      Kernel.stub(:load, ->(_) { raise ArgumentError, "boom" }) do
+        _out, err = capture_io { IRB::Reload.auto_reload! }
+        assert_includes err, "[irb-reload] Failed to reload lib/foo.rb: ArgumentError: boom"
+      end
+    end
+
+    def test_context_extension_reloads_before_evaluating
+      calls = []
+      context = ContextDouble.new(calls)
+
+      IRB::Reload.stub(:auto_reload!, -> { calls << :auto_reload }) do
+        assert_equal "result", context.evaluate("statement", 1)
+      end
+
+      assert_equal [:auto_reload, [:evaluate, "statement", 1]], calls
+    end
+
     def test_reload_reports_a_failure_on_stderr
       IRB::Reload.instance_variable_set(:@changed_files, Set["lib/foo.rb"])
 
@@ -100,6 +157,19 @@ module IRB
         event = EventDouble.new(paths, event_type)
         @block.call(event)
       end
+    end
+
+    class ContextDouble
+      def initialize(calls)
+        @calls = calls
+      end
+
+      def evaluate(statement, line_no)
+        @calls << [:evaluate, statement, line_no]
+        "result"
+      end
+
+      prepend IRB::Reload::ContextExtension
     end
 
     class EventDouble

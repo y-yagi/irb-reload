@@ -6,6 +6,7 @@ require "watchcat"
 
 require_relative "reload/version"
 require_relative "reload/command"
+require_relative "reload/context_extension"
 
 module IRB
   module Reload
@@ -30,10 +31,18 @@ module IRB
         true
       end
 
-      def reload!
+      def reload!(verbose: true)
         consume_changed_files.each do |file|
-          reload_file(file)
+          reload_file(file, verbose:)
         end
+      end
+
+      def auto?
+        config[:auto] == true
+      end
+
+      def auto_reload!
+        reload!(verbose: false) if auto?
       end
 
       def watched_paths
@@ -88,9 +97,9 @@ module IRB
         end
       end
 
-      def reload_file(file)
+      def reload_file(file, verbose: true)
         load_quietly(file)
-        $stdout.puts "[irb-reload] Reloaded #{file}"
+        $stdout.puts "[irb-reload] Reloaded #{file}" if verbose
       rescue LoadError
         # The file was removed or moved. Nothing to reload.
       rescue ScriptError, StandardError => e
@@ -108,4 +117,5 @@ module IRB
 end
 
 IRB::Command.register(:reload!, IRB::Reload::Command)
+IRB::Context.prepend(IRB::Reload::ContextExtension)
 IRB::Reload.start
