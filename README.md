@@ -25,13 +25,26 @@ gem install irb-reload
 reload! # Reload updated files
 ```
 
+### Auto reload
+
+Set `auto` to reload updated files without typing `reload!`.
+
+```ruby
+IRB.conf[:RELOAD] = {
+  auto: true,
+}
+```
+
+Files are reloaded just before IRB evaluates your next input, not the moment you save them.
+
 ### Configuration
 
 You can tweak the watcher through `IRB.conf`.
 
 ```ruby
 IRB.conf[:RELOAD] = {
-	paths: %w[app lib],               # directories to watch. Default is `lib`.
+  paths: %w[app lib],  # directories to watch. Default is `lib`.
+  auto: true,          # reload updated files automatically. Default is `false`.
 }
 ```
 
